@@ -1,25 +1,29 @@
 package expression.exceptions;
 
-
 import java.util.List;
+import java.util.Map;
 
 
 public class StringSource {
     private final String data;
     private int pos;
-
     private Token curToken = Token.BEGIN;
-
+    private Token prevToken = Token.BEGIN;
     private int number;
     private String varName;
     private int balance = 0;
+    private String curBracket;
+    private List<String> variables = List.of("x", "y", "z");
 
-    private final List<String> vars = List.of("x", "y", "z");
+    private final Map<String, String> pairs = Map.of("(", ")", "{", "}", "[", "]");
 
-    private final List<Token> binaryOperationToken = List.of(Token.MIN, Token.MAX, Token.ADD, Token.SUB, Token.MUL, Token.DIV, Token.AND, Token.XOR, Token.OR);
-    private final List<String> binaryOperation = List.of("+", "*", "/", "|", "&", "^");
     public StringSource(final String data) {
         this.data = data;
+    }
+
+    public StringSource(final String data, final List<String> variables) {
+        this.data = data;
+        this.variables = variables;
     }
 
     public void skipWhitespace() {
@@ -28,9 +32,9 @@ public class StringSource {
         }
     }
 
-    public void nextInt(char ch) {
+    public void nextInt() {
         StringBuilder sb = new StringBuilder();
-        sb.append(ch);
+        sb.append(data.charAt(pos));
         pos += 1;
 
         while (pos < data.length() && Character.isDigit(data.charAt(pos))) {
@@ -47,6 +51,46 @@ public class StringSource {
         curToken = Token.NUM;
     }
 
+    public String nextVar() {
+        StringBuilder sb = new StringBuilder();
+
+        char nextChar;
+        if (pos < data.length()) {
+            nextChar = data.charAt(pos);
+            if (nextChar == '$' || data.charAt(pos) == '_' ||
+                    Character.isLetter(data.charAt(pos))) {
+
+                while (pos < data.length() && (nextChar == '$' ||
+                        nextChar == '_' || Character.isLetter(nextChar) ||
+                        Character.isDigit(nextChar))) {
+
+                    sb.append(nextChar);
+                    pos++;
+                    if (pos < data.length()) {
+                        nextChar = data.charAt(pos);
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        pos--;
+        return sb.toString();
+    }
+
+    private static boolean isBinaryOp(Token token) {
+        return switch (token) {
+            case ADD -> true;
+            case SUB -> true;
+            case OR -> true;
+            case AND -> true;
+            case XOR -> true;
+            case MUL -> true;
+            case DIV -> true;
+            default -> false;
+        };
+    }
+
     public void nextToken() {
         skipWhitespace();
         if (pos >= data.length()) {
@@ -55,9 +99,6 @@ public class StringSource {
         }
 
         char ch = data.charAt(pos);
-        if (binaryOperation.contains(Character.toString(ch))) {
-            checkBinaryOperation();
-        }
         switch (ch) {
             case '*' -> curToken = Token.MUL;
             case '/' -> curToken = Token.DIV;
@@ -70,91 +111,85 @@ public class StringSource {
                     curToken = Token.SUB;
                 } else {
                     if (pos == data.length() - 1) {
-                        throw new ParserException("No last argument");
+                        throw new ParserException("No last argument, in position " + (pos + 1));
                     }
                     if (Character.isDigit(data.charAt(pos + 1))) {
-                        nextInt(ch);
-                        break;
+                        nextInt();
+                    }else {
+                        curToken = Token.NEG;
                     }
-                    curToken = Token.NEG;
                 }
             }
-            case '(' -> {
+            case '(', '{', '[' -> {
+                curBracket = Character.toString(ch);
+
                 if (curToken == Token.RP || curToken == Token.NUM || curToken == Token.VAR) {
-                    throw new ParserException("No operator");
+                    throw new ParserException("No operator, in position " + (pos + 1));
                 }
                 balance += 1;
                 curToken = Token.LP;
             }
-            case ')' -> {
+            case ')', '}', ']' -> {
 
-                if (binaryOperationToken.contains(curToken) || curToken == Token.LP || curToken == Token.BEGIN) {
-                    throw new ParserException("No last argument");
+                curBracket = Character.toString(ch);
+                if (isBinaryOp(curToken) || curToken == Token.BEGIN) {
+                    throw new ParserException("No last argument, in position " + (pos + 1));
+                }
+                if(curToken == Token.LP ){
+                    throw new ParserException("No expression in bracket, in position " + pos);
                 }
                 balance -= 1;
                 if (balance < 0) {
-                    throw new ParserException("No opening parenthesis");
+                    throw new ParserException("No opening parenthesis, in position " + pos);
                 }
                 curToken = Token.RP;
             }
-            case 'l' -> {
-                pos += 1;
-                if (data.charAt(pos) == '1') {
-                    curToken = Token.L1;
-                } else {
-                    throw new ParserException("Expected value: l1");
-                }
-            }
-            case 't' -> {
-                pos += 1;
-                if (data.charAt(pos) == '1') {
-                    curToken = Token.T1;
-                } else {
-                    throw new ParserException("Expected value: t1");
-                }
-            }
             case 'm' -> {
                 if (pos == 0) {
-                    throw new ParserException("No first argument");
+                    throw new ParserException("No first argument, in position " + pos);
                 }
                 if (Character.isDigit(data.charAt(pos - 1)) && Character.isDigit(data.charAt(pos + 3))) {
-                    throw new ParserException("Expected value: min or max");
+                    throw new ParserException("Expected value: min or max, in position " + pos);
                 }
                 if (data.startsWith("max", pos)) {
                     pos += 2;
-                    checkBinaryOperation();
                     curToken = Token.MAX;
                 } else if ((data.startsWith("min", pos))) {
-
                     pos += 2;
-                    checkBinaryOperation();
                     curToken = Token.MIN;
                 } else {
-                    throw new ParserException("Expected value: min or max");
+                    throw new ParserException("Expected value: min or max, in position" + pos);
                 }
             }
             default -> {
                 if (Character.isDigit(ch)) {
                     if (curToken == Token.RP || curToken == Token.NUM || curToken == Token.VAR) {
-                        throw new ParserException("Spaces in number");
+                        throw new ParserException("Spaces in number, in position " + pos);
                     }
-                    nextInt(ch);
-                } else if (vars.contains(Character.toString(ch))) {
-                    varName = Character.toString(ch);
-                    curToken = Token.VAR;
+                    nextInt();
                 } else {
-                    throw new ParserException("Unexpected value: " + ch);
+                    varName = nextVar();
+
+                    if (variables.contains(varName)) {
+                        curToken = Token.VAR;
+                    } else {
+                        throw new ParserException("Unexpected value: " + varName + ", in position " + (pos + 1));
+                    }
                 }
             }
         }
+        if( isBinaryOp(curToken)){
+            checkBinaryOperation();
+        }
+        prevToken = curToken;
         pos++;
     }
 
     public void checkBinaryOperation() {
-        if (binaryOperationToken.contains(curToken)) {
-            throw new ParserException("No middle argument");
-        } else if (curToken == Token.LP || curToken == Token.BEGIN) {
-            throw new ParserException("No first argument");
+        if (isBinaryOp(prevToken) ){
+            throw new ParserException("No middle argument, in position " + (pos - 1));
+        } else if (prevToken == Token.LP || prevToken == Token.BEGIN) {
+            throw new ParserException("No first argument, in position " + pos);
         }
     }
 
@@ -170,4 +205,20 @@ public class StringSource {
     public String getVarName() {
         return varName;
     }
+
+    public String getCurBracket() {
+        return curBracket;
+    }
+
+    public String getPair(String openBracket) {
+        return pairs.get(openBracket);
+    }
+
+    public int getVarIndex() {
+        return variables.indexOf(varName);
+    }
+    public int getPos(){
+        return pos;
+    }
 }
+

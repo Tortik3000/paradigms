@@ -4,6 +4,7 @@ package expression;
 
 
 import java.math.BigInteger;
+import java.util.List;
 
 public class Add extends AbstractBinaryExpression{
 
@@ -19,6 +20,11 @@ public class Add extends AbstractBinaryExpression{
     @Override
     public int evaluate(int x, int y, int z)  {
         return evaluate(x, y, z, "+");
+    }
+
+    @Override
+    public int evaluate(List<Integer> vars){
+        return evaluate(vars, "+");
     }
 
 

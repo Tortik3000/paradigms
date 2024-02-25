@@ -1,6 +1,7 @@
 package expression;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public class LowBit extends AbstractUnaryExpression {
 
@@ -21,6 +22,11 @@ public class LowBit extends AbstractUnaryExpression {
     @Override
     public int evaluate(int x, int y, int z){
         return evaluate(x, y, z, "t1");
+    }
+
+    @Override
+    public int evaluate(List<Integer> vars){
+        return evaluate(vars, "t1");
     }
 
     @Override

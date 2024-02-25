@@ -1,29 +1,32 @@
 package expression;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 
-public class Const implements Priority {
-    private final BigInteger value;
+public class Const implements Priority, ListExpression {
+    private final int value;
 
 
     public Const(int value) {
-        this.value = BigInteger.valueOf(value);
+        this.value = value;
     }
 
-    public Const(BigInteger value) {
-        this.value = value;
+
+    @Override
+    public int evaluate(List<Integer> variables){
+        return value;
     }
 
     @Override
     public int evaluate(int variable) {
-        return value.intValue();
+        return value;
     }
 
 
     @Override
     public int evaluate(int x, int y, int z) {
-        return value.intValue();
+        return value;
     }
 
 
@@ -47,7 +50,7 @@ public class Const implements Priority {
             return false;
         }
         Const that = (Const) obj;
-        return Objects.equals(value, that.value);
+        return value == that.value;
     }
 
 

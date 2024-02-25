@@ -1,6 +1,7 @@
 package expression;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public class HeightBit extends AbstractUnaryExpression {
 
@@ -22,6 +23,13 @@ public class HeightBit extends AbstractUnaryExpression {
     public int evaluate(int x, int y, int z){
         return evaluate(x, y, z, "l1");
     }
+
+    @Override
+    public int evaluate(List<Integer> vars){
+        return evaluate(vars, "l1");
+    }
+
+
 
     @Override
     public String toMiniString(){

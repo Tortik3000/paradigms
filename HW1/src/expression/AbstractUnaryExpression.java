@@ -1,5 +1,6 @@
 package expression;
 
+import java.util.List;
 import java.util.Objects;
 
 abstract public class AbstractUnaryExpression implements Priority{
@@ -8,6 +9,7 @@ abstract public class AbstractUnaryExpression implements Priority{
     public AbstractUnaryExpression(Priority expression) {
         this.expression = expression;
     }
+
 
     @Override
     public int hashCode() {
@@ -31,7 +33,14 @@ abstract public class AbstractUnaryExpression implements Priority{
         return operation + "(" + expression + ")";
 
     }
-
+    public int evaluate(List<Integer> variables, String operation){
+        return switch (operation) {
+            case "-" -> (-1) * expression.evaluate(variables);
+            case "l1" -> highestOneBit(expression.evaluate(variables));
+            case "t1" -> lowestOneBit(expression.evaluate(variables));
+            default -> throw new IllegalArgumentException("Unexpected value: " + operation);
+        };
+    }
     public int evaluate(int x, String operation) {
         return switch (operation) {
             case "-" -> (-1) * expression.evaluate(x);

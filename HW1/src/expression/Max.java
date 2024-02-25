@@ -1,6 +1,7 @@
 package expression;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public class Max extends AbstractBinaryExpression{
     public Max(Priority expression1, Priority expression2){
@@ -14,6 +15,12 @@ public class Max extends AbstractBinaryExpression{
     @Override
     public int evaluate(int x, int y, int z)  {
         return evaluate(x, y, z, "max");
+    }
+
+
+    @Override
+    public int evaluate(List<Integer> vars){
+        return evaluate(vars, "max");
     }
 
 

@@ -1,6 +1,8 @@
 package expression;
 
 
+
+import java.util.List;
 import java.util.Objects;
 
 abstract public class AbstractBinaryExpression implements Priority {
@@ -10,6 +12,40 @@ abstract public class AbstractBinaryExpression implements Priority {
     public AbstractBinaryExpression(Priority expression1, Priority expression2) {
         this.expression1 = expression1;
         this.expression2 = expression2;
+    }
+
+
+    public int evaluate(List<Integer> variables, String operation){
+        int ans;
+        switch (operation) {
+            case "+" -> ans = expression1.evaluate(variables) + expression2.evaluate(variables);
+            case "-" -> ans = expression1.evaluate(variables) - expression2.evaluate(variables);
+            case "*" -> ans = expression1.evaluate(variables) * expression2.evaluate(variables);
+            case "/" -> ans = expression1.evaluate(variables) / expression2.evaluate(variables);
+            case "&" -> ans = expression1.evaluate(variables) & expression2.evaluate(variables);
+            case "^" -> ans = expression1.evaluate(variables) ^ expression2.evaluate(variables);
+            case "|" -> ans = expression1.evaluate(variables) | expression2.evaluate(variables);
+            case "min" -> {
+                int exp1 = expression1.evaluate(variables);
+                int exp2 = expression2.evaluate(variables);
+                if(exp1 >= exp2){
+                    ans = exp2;
+                }else{
+                    ans = exp1;
+                }
+            }
+            case "max" ->{
+                int exp1 = expression1.evaluate(variables);
+                int exp2 = expression2.evaluate(variables);
+                if(exp1 <= exp2){
+                    ans = exp2;
+                }else{
+                    ans = exp1;
+                }
+            }
+            default -> throw new IllegalArgumentException("Unexpected value: " + operation);
+        };
+        return ans;
     }
 
     @Override
@@ -35,34 +71,69 @@ abstract public class AbstractBinaryExpression implements Priority {
     }
 
     public int evaluate(int x, String operation) {
-        return switch (operation) {
-            case "+" -> expression1.evaluate(x) + expression2.evaluate(x);
-            case "-" -> expression1.evaluate(x) - expression2.evaluate(x);
-            case "*" -> expression1.evaluate(x) * expression2.evaluate(x);
-            case "/" -> expression1.evaluate(x) / expression2.evaluate(x);
-            case "&" -> expression1.evaluate(x) & expression2.evaluate(x);
-            case "^" -> expression1.evaluate(x) ^ expression2.evaluate(x);
-            case "|" -> expression1.evaluate(x) | expression2.evaluate(x);
-            case "min" -> Math.min(expression1.evaluate(x), expression2.evaluate(x));
-            case "max" -> Math.max(expression1.evaluate(x), expression2.evaluate(x));
+        int ans;
+        switch (operation) {
+            case "+" -> ans = expression1.evaluate(x) + expression2.evaluate(x);
+            case "-" -> ans = expression1.evaluate(x) - expression2.evaluate(x);
+            case "*" -> ans = expression1.evaluate(x) * expression2.evaluate(x);
+            case "/" -> ans = expression1.evaluate(x) / expression2.evaluate(x);
+            case "&" -> ans = expression1.evaluate(x) & expression2.evaluate(x);
+            case "^" -> ans = expression1.evaluate(x) ^ expression2.evaluate(x);
+            case "|" -> ans = expression1.evaluate(x) | expression2.evaluate(x);
+            case "min" -> {
+                int exp1 = expression1.evaluate(x);
+                int exp2 = expression2.evaluate(x);
+                if(exp1 >= exp2){
+                    ans = exp2;
+                }else{
+                    ans = exp1;
+                }
+            }
+            case "max" ->{
+                int exp1 = expression1.evaluate(x);
+                int exp2 = expression2.evaluate(x);
+                if(exp1 <= exp2){
+                    ans = exp2;
+                }else{
+                    ans = exp1;
+                }
+            }
             default -> throw new IllegalArgumentException("Unexpected value: " + operation);
         };
+        return ans;
     }
 
     public int evaluate(int x, int y, int z, String operation) {
-
-        return switch (operation) {
-            case "+" -> expression1.evaluate(x, y, z) + expression2.evaluate(x, y, z);
-            case "-" -> expression1.evaluate(x, y, z) - expression2.evaluate(x, y, z);
-            case "*" -> expression1.evaluate(x, y, z) * expression2.evaluate(x, y, z);
-            case "/" -> expression1.evaluate(x, y, z) / expression2.evaluate(x, y, z);
-            case "&" -> expression1.evaluate(x, y, z) & expression2.evaluate(x, y, z);
-            case "^" -> expression1.evaluate(x, y, z) ^ expression2.evaluate(x, y, z);
-            case "|" -> expression1.evaluate(x, y, z) | expression2.evaluate(x, y, z);
-            case "min" -> Math.min(expression1.evaluate(x, y, z), expression2.evaluate(x, y, z));
-            case "max" -> Math.max(expression1.evaluate(x, y, z), expression2.evaluate(x, y, z));
+        int ans;
+        switch (operation) {
+            case "+" -> ans = expression1.evaluate(x, y, z) + expression2.evaluate(x, y, z);
+            case "-" -> ans = expression1.evaluate(x, y, z) - expression2.evaluate(x, y, z);
+            case "*" -> ans = expression1.evaluate(x, y, z) * expression2.evaluate(x, y, z);
+            case "/" -> ans = expression1.evaluate(x, y, z) / expression2.evaluate(x, y, z);
+            case "&" -> ans = expression1.evaluate(x, y, z) & expression2.evaluate(x, y, z);
+            case "^" -> ans = expression1.evaluate(x, y, z) ^ expression2.evaluate(x, y, z);
+            case "|" -> ans = expression1.evaluate(x, y, z) | expression2.evaluate(x, y, z);
+            case "min" -> {
+                int exp1 = expression1.evaluate(x, y, z);
+                int exp2 = expression2.evaluate(x, y, z);
+                if(exp1 >= exp2){
+                    ans = exp2;
+                }else{
+                    ans = exp1;
+                }
+            }
+            case "max" -> {
+                int exp1 = expression1.evaluate(x, y, z);
+                int exp2 = expression2.evaluate(x, y, z);
+                if(exp1 <= exp2){
+                    ans = exp2;
+                }else{
+                    ans = exp1;
+                }
+            }
             default -> throw new IllegalArgumentException("Unexpected value: " + operation);
         };
+        return ans;
     }
 
 

@@ -1,14 +1,32 @@
 package expression;
 
-import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 
-public class Variable implements Priority {
+public class Variable implements Priority, ListExpression{
 
     private final String variable;
+    private int indexVar;
 
-    public Variable(String variable) {
+    public Variable(String variable, int indexVar) {
         this.variable = variable;
+        this.indexVar = indexVar;
+    }
+    public Variable(int var){
+        this.variable = Integer.toString(var);
+        this.indexVar = var;
+    }
+
+    public Variable(String var){
+        this.variable = var;
+
+    }
+
+
+
+    @Override
+    public int evaluate(List<Integer> variables){
+        return variables.get(indexVar);
     }
 
     @Override

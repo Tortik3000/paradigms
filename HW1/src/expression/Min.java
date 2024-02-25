@@ -1,6 +1,7 @@
 package expression;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public class Min extends AbstractBinaryExpression{
     public Min(Priority expression1, Priority expression2){
@@ -14,6 +15,12 @@ public class Min extends AbstractBinaryExpression{
     @Override
     public int evaluate(int x, int y, int z)  {
         return evaluate(x, y, z, "min");
+    }
+
+
+    @Override
+    public int evaluate(List<Integer> vars){
+        return evaluate(vars, "min");
     }
 
     @Override

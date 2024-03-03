@@ -1,13 +1,13 @@
 package expression.exceptions;
 
 import expression.Negate;
-import expression.Priority;
+import expression.PriorityExpression;
 
 import java.util.List;
 
 public class CheckedNegate extends Negate{
 
-    public CheckedNegate (Priority expression){
+    public CheckedNegate (PriorityExpression expression){
         super(expression);
     }
 

@@ -6,117 +6,79 @@ import java.util.List;
 
 
 public class ExpressionParser implements TripleParser, ListParser {
-    private final int maxPriority = 7;
+    private static final int maxPriority = 7;
 
     public ExpressionParser() {
     }
 
     @Override
-    public Priority parse(String expression) throws Exception {
-        final StringSource exp = new StringSource(expression);
-        return parsePriority(exp, maxPriority);
+    public PriorityExpression parse(String expression) throws Exception {
+        final Tokenizer tokenizer = new Tokenizer(expression);
+        return parsePriority(tokenizer, maxPriority);
     }
 
     @Override
     public ListExpression parse(String expression, List<String> variables) throws Exception {
-        final StringSource exp = new StringSource(expression, variables);
-        return parsePriority(exp, maxPriority);
+        final Tokenizer tokenizer = new Tokenizer(expression, variables);
+        return parsePriority(tokenizer, maxPriority);
     }
 
-    public Priority parsePriority(StringSource expression, int priority) throws Exception {
-        Priority res = priority >= 2 ?
-                parsePriority(expression, priority - 1) : parsePriority1(expression);
+    public PriorityExpression parsePriority(Tokenizer tokenizer, int priority) throws Exception {
+        PriorityExpression res = priority >= 2 ?
+                parsePriority(tokenizer, priority - 1) : parsePriority1(tokenizer);
         while (true) {
-//            for (int i = 2; i <= maxPriority; i++){
-//                if(i == priority){
-//                    if(i == getPriority(expression.getCurToken())) {
-//                        switch (expression.getCurToken()) {
-//                            case ADD -> res = new CheckedAdd(res, parsePriority(expression, priority - 1));
-//                            case SUB -> res = new CheckedSubtract(res, parsePriority(expression, priority - 1));
-//                            case MUL -> res = new CheckedMultiply(res, parsePriority1(expression));
-//                            case DIV -> res = new CheckedDivide(res, parsePriority1(expression));
-//                            case AND -> res = new And(res, parsePriority(expression, priority - 1));
-//                            case XOR -> res = new Xor(res, parsePriority(expression, priority - 1));
-//                            case OR -> res = new Or(res, parsePriority(expression, priority - 1));
-//                            case MIN -> res = new Min(res, parsePriority(expression, priority - 1));
-//                            case MAX -> res = new Max(res, parsePriority(expression, priority - 1));
-//                            default -> {
-//                                return res;
-//                            }
-//                        };
-//                        break;
-//                    }else{
-//                        return res;
-//                    }
-//                }
-//            }
-
-            if (checkOp(expression, priority, Token.MIN)) {
-                res = new Min(res, parsePriority(expression, priority - 1));
-            } else if (checkOp(expression, priority, Token.MAX)) {
-                res = new Max(res, parsePriority(expression, priority - 1));
-            } else if (checkOp(expression, priority, Token.OR)) {
-                res = new Or(res, parsePriority(expression, priority - 1));
-            } else if (checkOp(expression, priority, Token.XOR)) {
-                res = new Xor(res, parsePriority(expression, priority - 1));
-            } else if (checkOp(expression, priority, Token.AND)) {
-                res = new And(res, parsePriority(expression, priority - 1));
-            } else if (checkOp(expression, priority, Token.ADD)) {
-                res = new CheckedAdd(res, parsePriority(expression, priority - 1));
-            } else if (checkOp(expression, priority, Token.SUB)) {
-                res = new CheckedSubtract(res, parsePriority(expression, priority - 1));
-            } else if (checkOp(expression, priority, Token.MUL)) {
-                res = new CheckedMultiply(res, parsePriority1(expression));
-            } else if (checkOp(expression, priority, Token.DIV)) {
-                res = new CheckedDivide(res, parsePriority1(expression));
+            if (checkOp(tokenizer, priority, Token.MIN)) {
+                res = new Min(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.MAX)) {
+                res = new Max(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.OR)) {
+                res = new Or(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.XOR)) {
+                res = new Xor(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.AND)) {
+                res = new And(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.ADD)) {
+                res = new CheckedAdd(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.SUB)) {
+                res = new CheckedSubtract(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.MUL)) {
+                res = new CheckedMultiply(res, parsePriority1(tokenizer));
+            } else if (checkOp(tokenizer, priority, Token.DIV)) {
+                res = new CheckedDivide(res, parsePriority1(tokenizer));
             } else {
                 return res;
             }
-
         }
     }
 
-    private static boolean checkOp(StringSource expression, int priority, Token op) {
-        return priority == getPriority(op) && expression.getCurToken() == op;
+    private static boolean checkOp(Tokenizer tokenizer, int priority, Token op) {
+        return priority == Token.getPriority(op) && tokenizer.getCurToken() == op;
     }
 
-    private static int getPriority(Token token) {
-        return switch (token) {
-            case ADD -> 3;
-            case SUB -> 3;
-            case MUL -> 2;
-            case DIV -> 2;
-            case AND -> 4;
-            case XOR -> 5;
-            case OR -> 6;
-            case MIN -> 7;
-            case MAX -> 7;
-            default -> 0;
-        };
-    }
 
-    public Priority parsePriority1(StringSource expression) throws Exception {
-        expression.nextToken();
-        Priority res;
-        switch (expression.getCurToken()) {
-            case NEG -> res = new CheckedNegate(parsePriority1(expression));
+
+    public PriorityExpression parsePriority1(Tokenizer tokenizer) throws Exception {
+        tokenizer.nextToken();
+        PriorityExpression res;
+        switch (tokenizer.getCurToken()) {
+            case NEG -> res = new CheckedNegate(parsePriority1(tokenizer));
             case NUM -> {
-                res = new Const(expression.getNumber());
-                expression.nextToken();
+                res = new Const(tokenizer.getNumber());
+                tokenizer.nextToken();
             }
             case VAR -> {
-                res = new Variable(expression.getVarName(), expression.getVarIndex());
-                expression.nextToken();
+                res = new Variable(tokenizer.getVarName(), tokenizer.getVarIndex());
+                tokenizer.nextToken();
             }
             case LP -> {
-                String curBracket = expression.getCurBracket();
-                res = parsePriority(expression, maxPriority);
-                if (expression.getCurToken() != Token.RP || !expression.getCurBracket().equals(expression.getPair(curBracket))) {
-                    throw new ParserException("No closing parenthesis, in position " + expression.getPos());
+                String curBracket = tokenizer.getCurBracket();
+                res = parsePriority(tokenizer, maxPriority);
+                if (tokenizer.getCurToken() != Token.RP || !tokenizer.getCurBracket().equals(tokenizer.getPairBracket(curBracket))) {
+                    throw new ParserException("No closing parenthesis, in position " + tokenizer.getPos());
                 }
-                expression.nextToken();
+                tokenizer.nextToken();
             }
-            default -> throw new ParserException("No last argument, in position " + expression.getPos());
+            default -> throw new ParserException("No last argument, in position " + tokenizer.getPos());
         }
         return res;
     }

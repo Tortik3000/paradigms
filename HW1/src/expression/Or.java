@@ -1,11 +1,10 @@
 package expression;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class Or extends AbstractBinaryExpression{
 
-    public Or(Priority expression1, Priority expression2){
+    public Or(PriorityExpression expression1, PriorityExpression expression2){
         super(expression1, expression2);
     }
     @Override

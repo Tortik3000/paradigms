@@ -1,12 +1,12 @@
 package expression.exceptions;
 
-import expression.Priority;
+import expression.PriorityExpression;
 import expression.Subtract;
 
 import java.util.List;
 
 public class CheckedSubtract extends Subtract {
-    public CheckedSubtract(Priority expression1, Priority expression2){
+    public CheckedSubtract(PriorityExpression expression1, PriorityExpression expression2){
         super(expression1, expression2);
     }
 

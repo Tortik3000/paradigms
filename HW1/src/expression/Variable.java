@@ -3,7 +3,7 @@ package expression;
 import java.util.List;
 import java.util.Objects;
 
-public class Variable implements Priority, ListExpression{
+public class Variable implements PriorityExpression, ListExpression{
 
     private final String variable;
     private int indexVar;
@@ -21,8 +21,6 @@ public class Variable implements Priority, ListExpression{
         this.variable = var;
 
     }
-
-
 
     @Override
     public int evaluate(List<Integer> variables){

@@ -1,10 +1,9 @@
 package expression;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class Max extends AbstractBinaryExpression{
-    public Max(Priority expression1, Priority expression2){
+    public Max(PriorityExpression expression1, PriorityExpression expression2){
         super(expression1, expression2);
     }
     @Override

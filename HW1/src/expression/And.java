@@ -1,11 +1,10 @@
 package expression;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class And extends AbstractBinaryExpression{
 
-    public And (Priority expression1, Priority expression2){
+    public And (PriorityExpression expression1, PriorityExpression expression2){
         super(expression1, expression2);
     }
 

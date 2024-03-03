@@ -5,11 +5,11 @@ package expression;
 import java.util.List;
 import java.util.Objects;
 
-abstract public class AbstractBinaryExpression implements Priority {
-    protected final Priority expression1;
-    protected final Priority expression2;
+abstract public class AbstractBinaryExpression implements PriorityExpression {
+    protected final PriorityExpression expression1;
+    protected final PriorityExpression expression2;
 
-    public AbstractBinaryExpression(Priority expression1, Priority expression2) {
+    public AbstractBinaryExpression(PriorityExpression expression1, PriorityExpression expression2) {
         this.expression1 = expression1;
         this.expression2 = expression2;
     }

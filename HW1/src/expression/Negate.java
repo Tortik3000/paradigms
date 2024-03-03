@@ -1,11 +1,10 @@
 package expression;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class Negate extends AbstractUnaryExpression{
 
-    public Negate(Priority expression){
+    public Negate(PriorityExpression expression){
         super(expression);
     }
 

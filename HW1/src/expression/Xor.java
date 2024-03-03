@@ -1,11 +1,10 @@
 package expression;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class Xor extends AbstractBinaryExpression{
 
-    public  Xor(Priority expression1, Priority expression2){
+    public  Xor(PriorityExpression expression1, PriorityExpression expression2){
         super(expression1, expression2);
     }
 

@@ -1,11 +1,10 @@
 package expression;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class Multiply extends AbstractBinaryExpression {
 
-    public Multiply(Priority expression1, Priority expression2) {
+    public Multiply(PriorityExpression expression1, PriorityExpression expression2) {
         super(expression1, expression2);
     }
 

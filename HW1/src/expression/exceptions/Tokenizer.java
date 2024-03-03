@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class StringSource {
+public class Tokenizer {
     private final String data;
     private int pos;
     private Token curToken = Token.BEGIN;
@@ -15,13 +15,13 @@ public class StringSource {
     private String curBracket;
     private List<String> variables = List.of("x", "y", "z");
 
-    private final Map<String, String> pairs = Map.of("(", ")", "{", "}", "[", "]");
+    private static final Map<String, String> pairs = Map.of("(", ")", "{", "}", "[", "]");
 
-    public StringSource(final String data) {
+    public Tokenizer(final String data) {
         this.data = data;
     }
 
-    public StringSource(final String data, final List<String> variables) {
+    public Tokenizer(final String data, final List<String> variables) {
         this.data = data;
         this.variables = variables;
     }
@@ -78,19 +78,6 @@ public class StringSource {
         return sb.toString();
     }
 
-    private static boolean isBinaryOp(Token token) {
-        return switch (token) {
-            case ADD -> true;
-            case SUB -> true;
-            case OR -> true;
-            case AND -> true;
-            case XOR -> true;
-            case MUL -> true;
-            case DIV -> true;
-            default -> false;
-        };
-    }
-
     public void nextToken() {
         skipWhitespace();
         if (pos >= data.length()) {
@@ -132,7 +119,7 @@ public class StringSource {
             case ')', '}', ']' -> {
 
                 curBracket = Character.toString(ch);
-                if (isBinaryOp(curToken) || curToken == Token.BEGIN) {
+                if (Token.isBinaryOp(curToken) || curToken == Token.BEGIN) {
                     throw new ParserException("No last argument, in position " + (pos + 1));
                 }
                 if(curToken == Token.LP ){
@@ -178,7 +165,7 @@ public class StringSource {
                 }
             }
         }
-        if( isBinaryOp(curToken)){
+        if( Token.isBinaryOp(curToken)){
             checkBinaryOperation();
         }
         prevToken = curToken;
@@ -186,7 +173,7 @@ public class StringSource {
     }
 
     public void checkBinaryOperation() {
-        if (isBinaryOp(prevToken) ){
+        if (Token.isBinaryOp(prevToken) ){
             throw new ParserException("No middle argument, in position " + (pos - 1));
         } else if (prevToken == Token.LP || prevToken == Token.BEGIN) {
             throw new ParserException("No first argument, in position " + pos);
@@ -210,7 +197,7 @@ public class StringSource {
         return curBracket;
     }
 
-    public String getPair(String openBracket) {
+    public String getPairBracket(String openBracket) {
         return pairs.get(openBracket);
     }
 

@@ -1,9 +1,8 @@
 package queue;
 
-import java.util.Objects;
 import java.util.function.Predicate;
 
-public class ArrayQueueModuleTest {
+public class TestArrayQueueModule {
     public static void main(String[] args) {
         for (int i = 0; i < 5; i++) {
             ArrayQueueModule.enqueue(i + "e");

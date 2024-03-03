@@ -1,13 +1,13 @@
 package expression.exceptions;
 
 import expression.Multiply;
-import expression.Priority;
+import expression.PriorityExpression;
 
 import java.util.List;
 
 public class CheckedMultiply extends Multiply {
 
-    public CheckedMultiply(Priority expression1, Priority expression2) {
+    public CheckedMultiply(PriorityExpression expression1, PriorityExpression expression2) {
         super(expression1, expression2);
     }
 

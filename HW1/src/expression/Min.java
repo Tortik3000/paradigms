@@ -1,10 +1,9 @@
 package expression;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class Min extends AbstractBinaryExpression{
-    public Min(Priority expression1, Priority expression2){
+    public Min(PriorityExpression expression1, PriorityExpression expression2){
         super(expression1, expression2);
     }
     @Override

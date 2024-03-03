@@ -3,10 +3,10 @@ package expression;
 import java.util.List;
 import java.util.Objects;
 
-abstract public class AbstractUnaryExpression implements Priority{
-    protected final Priority expression;
+abstract public class AbstractUnaryExpression implements PriorityExpression {
+    protected final PriorityExpression expression;
 
-    public AbstractUnaryExpression(Priority expression) {
+    public AbstractUnaryExpression(PriorityExpression expression) {
         this.expression = expression;
     }
 

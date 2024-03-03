@@ -18,6 +18,7 @@ public class ArrayQueueADT {
     // immutable(head, size)
     public static void enqueue(final ArrayQueueADT queue, final Object element) {
         Objects.requireNonNull(element);
+        Objects.requireNonNull(queue);
         queue.elements[(queue.head + queue.size) % queue.elements.length] = element;
         if (queue.size + 1 == queue.elements.length) {
             queue.elements = extensionQueue(queue,queue.elements.length * 2);
@@ -38,6 +39,7 @@ public class ArrayQueueADT {
     // Q: R = elements[head] && immutable(head, size) &&
     // head' = head && size' = size
     public static Object element(final ArrayQueueADT queue) {
+        Objects.requireNonNull(queue);
         assert queue.size > 0;
         return queue.elements[queue.head];
     }
@@ -46,6 +48,7 @@ public class ArrayQueueADT {
     // Q: R = elements[head] && head' = (head + 1) % elements.length &&
     // size' = size-- && immutable(head', size')
     public static Object dequeue(final ArrayQueueADT queue) {
+        Objects.requireNonNull(queue);
         Object result = queue.elements[queue.head];
         queue.elements[queue.head] = null;
         queue.head = (queue.head + 1) % queue.elements.length;
@@ -56,18 +59,21 @@ public class ArrayQueueADT {
     // P: queue != null
     // Q: R == size && immutable(start, size)
     public static int size(final ArrayQueueADT queue) {
+        Objects.requireNonNull(queue);
         return queue.size;
     }
 
     // P: queue != null
     // Q: R == (size == 0) && immutable(start, size)
     public static boolean isEmpty(final ArrayQueueADT queue) {
+        Objects.requireNonNull(queue);
         return (queue.size == 0);
     }
 
     // P: queue != null
     // Q: head' = 0 && size' = 0 && elements = new Object[2]
     public static void clear(final ArrayQueueADT queue) {
+        Objects.requireNonNull(queue);
         queue.elements = new Object[2];
         queue.head = 0;
         queue.size = 0;
@@ -79,6 +85,7 @@ public class ArrayQueueADT {
 
     public static void push(final ArrayQueueADT queue, Object element) {
         Objects.requireNonNull(element);
+        Objects.requireNonNull(queue);
         if ((queue.head - 1 + queue.elements.length) %
                 queue.elements.length ==
                 (queue.head + queue.size) % queue.elements.length) {
@@ -94,6 +101,7 @@ public class ArrayQueueADT {
     // immutable(head, size) &&
     // head' = head && size' = size
     public static Object peek(final ArrayQueueADT queue) {
+        Objects.requireNonNull(queue);
         assert queue.size > 0;
         return queue.elements[(queue.head +queue.size - 1) % queue.elements.length];
     }
@@ -102,6 +110,7 @@ public class ArrayQueueADT {
     // Q: R = elements[(head + size) % elements.length && head' = head &&
     // size' = size-- && immutable(head, size')
     public static Object remove(final ArrayQueueADT queue) {
+        Objects.requireNonNull(queue);
         assert queue.elements.length > 0;
         queue.size--;
         Object res = queue.elements[(queue.head + queue.size) % queue.elements.length];
@@ -114,7 +123,8 @@ public class ArrayQueueADT {
     // Q: R = count : maximum by switching on
     // a = [element_i1...element_in]: predicate(test, element_ik) == true
     public static int countIf(final ArrayQueueADT queue, Predicate<Object> predicate) {
-        assert predicate != null;
+        Objects.requireNonNull(queue);
+        Objects.requireNonNull(predicate);
         int count = 0;
         for (int i = 0; i < queue.size; i++) {
             if (predicate.test(queue.elements[(i + queue.head) % queue.elements.length])) {

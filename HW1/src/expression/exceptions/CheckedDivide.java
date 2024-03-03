@@ -1,13 +1,12 @@
 package expression.exceptions;
 
 import expression.Divide;
-import expression.Priority;
-import expression.Subtract;
+import expression.PriorityExpression;
 
 import java.util.List;
 
 public class CheckedDivide extends Divide {
-    public CheckedDivide(Priority expression1, Priority expression2){
+    public CheckedDivide(PriorityExpression expression1, PriorityExpression expression2){
         super(expression1, expression2);
     }
 

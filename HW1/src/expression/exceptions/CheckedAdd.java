@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CheckedAdd extends Add {
 
-    public CheckedAdd(Priority expression1, Priority expression2) {
+    public CheckedAdd(PriorityExpression expression1, PriorityExpression expression2) {
         super(expression1, expression2);
     }
 

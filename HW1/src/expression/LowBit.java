@@ -1,11 +1,10 @@
 package expression;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public class LowBit extends AbstractUnaryExpression {
 
-    public LowBit(Priority expression){
+    public LowBit(PriorityExpression expression){
         super(expression);
     }
 

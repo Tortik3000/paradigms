@@ -1,10 +1,9 @@
 package expression;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
-public class Const implements Priority, ListExpression {
+public class Const implements PriorityExpression, ListExpression {
     private final int value;
 
 

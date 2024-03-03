@@ -112,7 +112,7 @@ public class ArrayQueueModule {
     // Q: R = count : maximum by switching on
     // a = [element_i1...element_in]: predicate(test, element_ik) == true
     public static int countIf(Predicate<Object> predicate) {
-        assert predicate != null;
+        Objects.requireNonNull(predicate);
         int count = 0;
         for (int i = 0; i < size; i++) {
             if (predicate.test(elements[(i + head) % elements.length])) {

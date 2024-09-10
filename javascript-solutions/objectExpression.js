@@ -203,7 +203,9 @@ function createOperation(mod, stack){
         op = stack.splice(stack.length - 1);
         args = stack.splice(index + 1);
     }
-
+    if( !(op in OPERATIONS)){
+        throw new ParseError("unknown operation: " + op + ". At position: " + point);
+    }
     for (let el of args){
         if(el in OPERATIONS){
             throw new ParseError("no closing bracket, at position: " + point);
@@ -252,7 +254,7 @@ function parseMod(str, mod) {
             } else if(token in OPERATIONS){
                 stack.push(token);
             } else{
-                throw ParseError("unknown symbol: " + token + ". At position: " + point);
+                throw new ParseError("unknown symbol: " + token + ". At position: " + point);
             }
         }
     }

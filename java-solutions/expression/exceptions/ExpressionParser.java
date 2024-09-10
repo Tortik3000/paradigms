@@ -33,21 +33,26 @@ public class ExpressionParser implements TripleParser, ListParser {
         PriorityExpression res = priority >= 2 ?
                 parsePriority(tokenizer, priority - 1) : parsePriority1(tokenizer);
         while (true) {
-            boolean flag = true;
-            for (int i = 0; i < Token.binaryOp.length; i++) {
-                if (checkOp(tokenizer, priority, Token.binaryOp[i])) {
-                    if (priority == 2) {
-                        res = Token.makeOperation(
-                                Token.binaryOp[i], res, parsePriority1(tokenizer));
-                    } else {
-                        res = Token.makeOperation(
-                                Token.binaryOp[i], res, parsePriority(tokenizer, priority - 1));
-                    }
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
+            // :NOTE: //////
+            if (checkOp(tokenizer, priority, Token.MIN)) {
+                res = new Min(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.MAX)) {
+                res = new Max(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.OR)) {
+                res = new Or(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.XOR)) {
+                res = new Xor(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.AND)) {
+                res = new And(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.ADD)) {
+                res = new CheckedAdd(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.SUB)) {
+                res = new CheckedSubtract(res, parsePriority(tokenizer, priority - 1));
+            } else if (checkOp(tokenizer, priority, Token.MUL)) {
+                res = new CheckedMultiply(res, parsePriority1(tokenizer));
+            } else if (checkOp(tokenizer, priority, Token.DIV)) {
+                res = new CheckedDivide(res, parsePriority1(tokenizer));
+            } else {
                 return res;
             }
         }
